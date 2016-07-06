@@ -12,10 +12,19 @@ var easyCrypt = (function () {
     var KEY = options.key;
     var IV  = options.iv;
     try {
-      // encrypt some bytes
+      /////
+      console.log('should try to encrypt, 'options);
+      /////
 
-      // outputs encrypted hex
-      console.log('encrypted: ', encrypted);
+      // encrypt some bytes
+      var cipher = forge.rc2.createEncryptionCipher(KEY);
+      cipher.start(IV);
+      cipher.update(forge.util.createBuffer(message));
+      cipher.finish();
+      encrypted = cipher.output;
+
+      console.log('encrypt result: ', encrypted);
+
     } catch (e) {
       throw new CustomException('error while encrypting');
     }
@@ -40,7 +49,7 @@ var easyCrypt = (function () {
 
   function CustomException(message) {
     this.message = message.toString().trim();
-    return this.message;
+    throw this.message;
   }
 
   function unixTimeStampInSeconds() {
@@ -75,6 +84,9 @@ var easyCrypt = (function () {
         generateRandomIV(); // set _iv to random value
         options.iv = _iv;
       }
+      /////
+      console.log('options, 'options);
+      /////
       if (_message) {
         return encodebase64(encrypt(_message, options));
       }

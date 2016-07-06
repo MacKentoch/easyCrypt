@@ -92,6 +92,14 @@
     // demo utilisation
     (function() {
       'use strict';
+      //       En entrée :
+      // « 1234||MSHC||1364894465»
+      //
+      // Après cryptage puis encode base 64 puis encodage url :
+      // « EVXPi5ik7a4bYyGLRTjfw%2fcOO%2fMlWDAh» (le 2 Avril 2013 à 11h21)
+
+      var demoKey = 'Qu7QdtObHguH3OUk4Tm6fsgC2anq6ZZEuDFrMpYsdRFUADO3nQf2IcOKqk6ByK8p7UaFdfPqTHLUoozqhBYGymcByIFEFPnOVtvkOmjbb5Gubsvb2lHjSPktGkFTPeVp';
+      var demoIV  = 'zpCeMQw3';
 
       var rawMessageInput = document.getElementById('rawMessageInput');
       var cryptButton     = document.getElementById('validCrypt');
@@ -109,7 +117,7 @@
         event.preventDefault();
         var encryptedValue = easyCrypt
                               .setRawMessage(rawMessageInput.value)
-                              .getEncrypted({key: '', iv: ''});
+                              .getEncrypted({key: demoKey, iv: demoIV});
         resultInput.value   = encryptedValue;
       }
 

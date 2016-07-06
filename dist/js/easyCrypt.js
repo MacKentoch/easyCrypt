@@ -2,9 +2,7 @@
 
 var easyCrypt = (function () {
   var _message  = '';
-  // var _messageBase64 = '';
   var _unixTimeStampInSec = '';
-  var _separator = '||';
 
   var _key  = null;
   var _iv   = null;
@@ -15,13 +13,18 @@ var easyCrypt = (function () {
     var IV  = options.iv;
     try {
       // encrypt some bytes
+      var cipher = forge.rc2.createEncryptionCipher(KEY);
+      cipher.start(IV);
+      cipher.update(forge.util.createBuffer(message, 'utf8'));
+      cipher.finish();
+      encrypted = cipher.output;
 
-      // outputs encrypted hex
-      console.log('encrypted: ', encrypted);
+      console.log('encrypt result: ', encrypted.toHex());
+
     } catch (e) {
       throw new CustomException('error while encrypting');
     }
-    return encrypted;
+    return encrypted.toHex();
   }
 
   function encodebase64(value) {
@@ -42,7 +45,7 @@ var easyCrypt = (function () {
 
   function CustomException(message) {
     this.message = message.toString().trim();
-    return this.message;
+    throw this.message;
   }
 
   function unixTimeStampInSeconds() {
@@ -64,13 +67,7 @@ var easyCrypt = (function () {
     getRawMessage: function () {
       return _message;
     },
-    setRawMessage: function (login, password) {
-      _unixTimeStampInSec = unixTimeStampInSeconds();
-      _message = login  + _separator + password + _separator + unixTimeStampInSeconds() + '';
-      return this;
-    },
-    forceRawMessage: function (message) {
-      _unixTimeStampInSec = unixTimeStampInSeconds();
+    setRawMessage: function (message) {
       _message = message;
       return this;
     },
@@ -84,7 +81,7 @@ var easyCrypt = (function () {
         options.iv = _iv;
       }
       if (_message) {
-        return encodebase64(encrypt(_message, options));
+        return forge.util.encode64(encrypt(_message, options));
       }
       return null;
     },
