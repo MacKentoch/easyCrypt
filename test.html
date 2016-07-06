@@ -69,6 +69,11 @@
         type="button"
         value="crypt now!">
       </input>
+      <input
+        id="validDeCrypt"
+        type="button"
+        value="decrypt now!">
+      </input>
     </div>
 
     <div class="result">
@@ -85,44 +90,52 @@
     </div>
   </div>
 
-  <script src="./dist/js/base64.min.js"></script>
-  <script src="./dist/js/forge.min.js"></script>
-  <script src="./dist/js/easyCrypt.js"></script>
+  <script src="./js/base64.min.js"></script>
+  <script src="./js/forge.min.js"></script>
+  <script src="./js/easyCrypt.js"></script>
   <script>
-    // demo utilisation
+    // demo
     (function() {
       'use strict';
-      //       En entrée :
-      // « 1234||MSHC||1364894465»
-      //
-      // Après cryptage puis encode base 64 puis encodage url :
-      // « EVXPi5ik7a4bYyGLRTjfw%2fcOO%2fMlWDAh» (le 2 Avril 2013 à 11h21)
 
-      var demoKey = 'Qu7QdtObHguH3OUk4Tm6fsgC2anq6ZZEuDFrMpYsdRFUADO3nQf2IcOKqk6ByK8p7UaFdfPqTHLUoozqhBYGymcByIFEFPnOVtvkOmjbb5Gubsvb2lHjSPktGkFTPeVp';
-      var demoIV  = 'zpCeMQw3';
+      var demoKey = 'somethingsuperhuge';
+      var demoIV  = 'abcde';
 
       var rawMessageInput = document.getElementById('rawMessageInput');
       var cryptButton     = document.getElementById('validCrypt');
+      var decryptButton   = document.getElementById('validDeCrypt');
       var resultInput     = document.getElementById('resultInput');
 
       // windows loaded trick
       setTimeout(
         function() {
-          validCrypt.onclick = onCryptButtonClick;
+          validCrypt.onclick    = onCryptButtonClick;
+          decryptButton.onclick = onDeCryptButtonClick;
           resetInputs();
         }, 0
       );
 
       function onCryptButtonClick(event) {
         event.preventDefault();
-        var encryptedValue = easyCrypt
-                              .setRawMessage(rawMessageInput.value)
-                              .getEncrypted({key: demoKey, iv: demoIV});
-        resultInput.value   = encryptedValue;
+        if (rawMessageInput.value.trim() !== '') {
+          var encryptedValue = easyCrypt
+                                .setRawMessage(rawMessageInput.value)
+                                .getEncrypted({key: demoKey, iv: demoIV});
+          resultInput.value   = encryptedValue;
+        }
+      }
+
+      function onDeCryptButtonClick(event) {
+        event.preventDefault();
+        if (resultInput.value.trim() !== '') {
+          var decryptedValue = easyCrypt
+                                .getDecrypted(resultInput.value.trim(), {key: demoKey, iv: demoIV});
+          rawMessageInput.value   = decryptedValue;
+        }
       }
 
       function resetInputs() {
-        rawMessageInput.value = '1234||MSHC||1364894465';
+        rawMessageInput.value = '';
         resultInput.value     = '';
       }
     })()

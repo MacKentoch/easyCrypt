@@ -18,21 +18,29 @@ var easyCrypt = (function () {
       cipher.update(forge.util.createBuffer(message, 'utf8'));
       cipher.finish();
       encrypted = cipher.output;
-
-      console.log('encrypt result: ', encrypted.toHex());
-
     } catch (e) {
       throw new CustomException('error while encrypting');
     }
+    console.log('encrypted: ', encrypted.toHex());
     return encrypted.toHex();
   }
 
-  function encodebase64(value) {
-    if (Base64 && typeof Base64 === 'object') {
-      return Base64.encode(value);
-    } else {
-      throw new CustomException('error: base64 lib not found');
+  function decrypt(encrypted, options) {
+    var decrypted = null;
+    var KEY = options.key;
+    var IV  = options.iv;
+    try {
+      // encrypt some bytes
+      var cipher = forge.rc2.createDecryptionCipher(KEY);
+      cipher.start(IV);
+      cipher.update(encrypted);
+      cipher.finish();
+      decrypted = cipher.output;
+    } catch (e) {
+      throw new CustomException('error while decrypting');
     }
+    console.log('decrypted: ', decrypted.toHex());
+    return decrypted.toHex();
   }
 
   function generateRandomKey() {
@@ -82,6 +90,20 @@ var easyCrypt = (function () {
       }
       if (_message) {
         return forge.util.encode64(encrypt(_message, options));
+      }
+      return null;
+    },
+    getDecrypted: function (encrypted, options = {key: null, iv: null}) {
+      if (!options.key) {
+        generateRandomKey(); // set _key to random value
+        options.key = _key;
+      }
+      if (!options.iv) {
+        generateRandomIV(); // set _iv to random value
+        options.iv = _iv;
+      }
+      if (encrypted) {
+        return decrypt(forge.util.decode64(encrypted), options);
       }
       return null;
     },
