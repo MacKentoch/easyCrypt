@@ -1,9 +1,9 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>demo easy-crypt</title>
+  <title>demo easyCrypt</title>
   <style>
-    .divContainer {*
+    .divContainer {
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -120,7 +120,7 @@
           var encryptedValue = easyCrypt
                                 .setRawMessage(rawMessageInput.value)
                                 .getEncrypted({key: demoKey, iv: demoIV});
-          resultInput.value   = encryptedValue;
+          resultInput.value  = encryptedValue;
         }
       }
 
@@ -129,7 +129,7 @@
         if (resultInput.value.trim() !== '') {
           var decryptedValue = easyCrypt
                                 .getDecrypted(resultInput.value.trim(), {key: demoKey, iv: demoIV});
-          rawMessageInput.value   = decryptedValue;
+          rawMessageInput.value = decryptedValue;
         }
       }
 

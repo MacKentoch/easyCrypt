@@ -31,17 +31,28 @@ var easyCrypt = (function () {
     var IV  = options.iv;
     try {
       // encrypt some bytes
+      console.log('decrypt: ', encrypted);
       var cipher = forge.rc2.createDecryptionCipher(KEY);
       cipher.start(IV);
-      cipher.update(encrypted);
+      cipher.update(forge.util.createBuffer(encrypted, 'utf8'));
       cipher.finish();
       decrypted = cipher.output;
     } catch (e) {
-      throw new CustomException('error while decrypting');
+      throw new CustomException('error while decrypting', e);
     }
-    console.log('decrypted: ', decrypted.toHex());
+    console.log('decrypted: ', hex_to_ascii(decrypted.toHex()));
     return decrypted.toHex();
   }
+
+  function hex_to_ascii(str1)
+ {
+    var hex  = str1.toString();
+    var str = '';
+    for (var n = 0; n < hex.length; n += 2) {
+        str += String.fromCharCode(parseInt(hex.substr(n, 2), 16));
+    }
+    return str;
+ }
 
   function generateRandomKey() {
     _key = forge.random.getBytesSync(16);
@@ -51,8 +62,9 @@ var easyCrypt = (function () {
     _iv = forge.random.getBytesSync(8);
   }
 
-  function CustomException(message) {
+  function CustomException(message, error) {
     this.message = message.toString().trim();
+    console.error(error);
     throw this.message;
   }
 
