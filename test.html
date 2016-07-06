@@ -1,0 +1,125 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>demo easy-crypt</title>
+  <style>
+    .divContainer {*
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 300px;
+    }
+    .titleContainer {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content:center;
+    }
+    .validCryptBtnContainer {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content:center;
+    }
+    .rawMessageInput  {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content:center;
+    }
+    .rawMessageLabel,
+    .resultlabel  {
+      width: 150px;
+      text-align: right;
+    }
+    .result {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content:center;
+    }
+  </style>
+</head>
+<body style="background-color:#f1f1f1">
+
+  <div class="divContainer">
+    <div class="titleContainer">
+      <h3>
+        Enter raw message to crypt
+      </h3>
+    </div>
+
+    <div class="rawMessageInput">
+      <label
+        for"rawMessageInput"
+        class="rawMessageLabel">
+        raw message: &nbsp;
+      </label>
+      <input
+        id="rawMessageInput"
+        style="width:600px;"
+        type="text">
+      </input>
+    </div>
+
+    <div class="validCryptBtnContainer">
+      <input
+        id="validCrypt"
+        type="button"
+        value="crypt now!">
+      </input>
+    </div>
+
+    <div class="result">
+      <label
+        for"resultInput"
+        class="resultlabel">
+        crypted Message: &nbsp;
+      </label>
+      <input
+        id="resultInput"
+        style="width:600px;"
+        type="text">
+      </input>
+    </div>
+  </div>
+
+  <script src="./dist/js/base64.min.js"></script>
+  <script src="./dist/js/forge.min.js"></script>
+  <script src="./dist/js/easyCrypt.js"></script>
+  <script>
+    // demo utilisation
+    (function() {
+      'use strict';
+
+      var rawMessageInput = document.getElementById('rawMessageInput');
+      var cryptButton     = document.getElementById('validCrypt');
+      var resultInput     = document.getElementById('resultInput');
+
+      // windows loaded trick
+      setTimeout(
+        function() {
+          validCrypt.onclick = onCryptButtonClick;
+          resetInputs();
+        }, 0
+      );
+
+      function onCryptButtonClick(event) {
+        event.preventDefault();
+        var encryptedValue = easyCrypt
+                              .setRawMessage(rawMessageInput.value)
+                              .getEncrypted({key: '', iv: ''});
+        resultInput.value   = encryptedValue;
+      }
+
+      function resetInputs() {
+        rawMessageInput.value = '1234||MSHC||1364894465';
+        resultInput.value     = '';
+      }
+    })()
+  </script>
+
+
+</body>
+</html>
